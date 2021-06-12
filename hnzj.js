@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         hnzjlearning
-// @namespace    https://127.0.0.1
+// @namespace    https://github.com/teapiall/hnzj
 // @version      202101
 // @description  继续教育公需科目专业科目辅助|自动播放下一个视频
 // @author       wechat
