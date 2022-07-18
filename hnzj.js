@@ -1,62 +1,68 @@
 // ==UserScript==
-// @name         hnzjlearning
-// @namespace    https://github.com/teapiall/hnzj
-// @version      202101
-// @description  继续教育公需科目专业科目辅助|自动播放下一个视频
+// @name         河南专技在线辅助
+// @namespace    https://hnzj.ghlearning.com/
+// @version      0.2
+// @description  继续教育公需科目专业科目辅助|自动播放下一个视频|自动跳过答题|一次刷完所有已选课程
 // @author       wechat
 // @match        *://*.ghlearning.com/*
 // @run-at       document-end
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+    //'use strict';
 
-setInterval(function () {
-        if (document.getElementsByClassName("item-box")[0]) {
-            for (var j = 0; j < document.getElementsByClassName("item-box").length; j++) {
-              if (document.getElementsByClassName("bx-green")[j].innerText == "" ) {
-             if (document.getElementsByClassName("sr-only")[j * 2].innerText != "100.0%") {
-                  document.getElementsByClassName("item-box")[j].click();
-                    break;
-                }
-                }
-            }
-            setTimeout(function () {
-                console.log("恭喜您完成已选的所有课程！");
 
-                alert("恭喜您完成已选的所有课程！");
-            }, 3000);
+    function enterCourse() {
+
+
+        for(var j = 0;j< document.getElementsByClassName("btn learning").length;j++){
+            console.log(j);
+           if(document.getElementsByClassName("btn learning")[j].innerText == "进入学习"){
+                   document.getElementsByClassName("btn learning")[j].click();
+               break;
+             }
         }
 
 
-        if ($('button[id][class="btn btn-primary"][style="display:inline-block"]')[0].innerText == "返回课程列表" || document.getElementsByClassName("font-w7 text-aaa sum style beginstyle")[0].innerText == "总学时进度（100.00%）") {
-               console.log('课程进度完成，即将返回课程列表');
+        if (document.querySelector(".item-box")) {
+            for (var i = 0; i < document.querySelectorAll(".item-box").length; i++) {
+                if (document.querySelectorAll(".sr-only")[i * 2].innerText != "100.0%") {
+                    document.querySelectorAll(".item-box")[i].click();
+                    break;
+                }
+            }
+            setTimeout(function () {
+     //           console.log("恭喜您完成已选的所有课程！");
+                clearInterval(myTimer);
+      //          alert("恭喜您完成已选的所有课程！\n河南专技在线辅助\n作者：wechat\n网址：https://hnzj.ghlearning.com/");
                 history.back(-1);
-             }
-  var course = document.getElementsByClassName("rightnav cursor-p")[0];
-  var list = course.getElementsByTagName("li");
-  var i;
+            }, 2000);
+        }
+        let jindu = document.querySelector("#a span[du-html=sumschedule]");
+        if (jindu) {
 
-    for(i=0;i<list.length;i++){
-
-    if (list[i].className == "clearfix videoLi active" && list[i].innerText.indexOf("目录") == -1){
-    console.log(list[i].innerText);
-    console.log(i);
-    var current_course = i;
-      }
+            if (jindu.innerText != "100.00") {
+                if (document.querySelector(".pv-video")) {
+                    let playerH5 = document.querySelector(".pv-video");
+                    playerH5.volume = 0;
+                    if (playerH5.paused) {
+                        playerH5.play();
+                    }
+                }
+                let dangqian = document.querySelector(".videoLi.active");
+                if (dangqian.innerText.match(/单元测试/)){
+                    location.reload();
+                } else if (dangqian.innerText.match(/[0-9]+%/)[0] == "100%" && document.querySelector(".pt5 [class=progress-bar]")){
+                    document.querySelector(".pt5 [class=progress-bar]").parentElement.parentElement.click();
+                    setTimeout("location.reload();",2000);
+                }
+ //               console.log("【河南专技在线辅助】\n" + dangqian.innerText);
+            } else {
+                history.back(-1);
+            }
+        }
     }
-
-    if(list[current_course].innerText.indexOf("100%") != -1){
-        if(list[current_course+1].innerText.indexOf("%") == -1){
-        list[current_course+2].click();
-        }else{list[current_course+1].click();
-             }
-          }
-
-    document.getElementsByClassName("pv-playpause pv-iconfont pv-icon-btn-play")[0].click();
-
-        }, 20000);
+    let myTimer = setInterval(enterCourse, 3000);
 
 })();
-
 
